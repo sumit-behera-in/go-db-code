@@ -41,8 +41,8 @@ func (db *DB) GetByName(name string, availability bool) ([]structs.Product, erro
 	findOption := options.Find()
 
 	filter := bson.D{
-		{"name", name},
-		{"available", availability},
+		{Key: "name", Value: name},
+		{Key: "available", Value: availability},
 	}
 
 	var dataCollection []structs.Product
