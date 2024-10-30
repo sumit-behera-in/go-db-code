@@ -1,14 +1,13 @@
 package postgres
 
 import (
-	"database/sql"
 	"fmt"
 	"regexp"
 
 	_ "github.com/lib/pq"
 )
 
-func CreateProductTable(db *sql.DB, name string) error {
+func (db *DB) CreateProductTable(name string) error {
 
 	isValidName := regexp.MustCompile(`^[a-zA-Z0-9_]+$`).MatchString
 	if !isValidName(name) {
@@ -24,7 +23,7 @@ func CreateProductTable(db *sql.DB, name string) error {
 	)`, name)
 
 	// dont return anything
-	if _, err := db.Exec(query); err != nil {
+	if _, err := db.db.Exec(query); err != nil {
 		return err
 	}
 

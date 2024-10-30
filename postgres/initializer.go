@@ -7,7 +7,13 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func Dbinitalizer() (*sql.DB, error) {
+type DB struct {
+	db *sql.DB
+}
+
+func Dbinitalizer() (DB, error) {
+
+	db_instance := DB{}
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s sslmode=disable",
@@ -15,12 +21,12 @@ func Dbinitalizer() (*sql.DB, error) {
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		return db_instance, err
 	}
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		return db_instance, err
 	}
 
 	fmt.Println("Successfully connected!")
@@ -28,13 +34,13 @@ func Dbinitalizer() (*sql.DB, error) {
 	var exists bool
 	query := fmt.Sprintf("SELECT EXISTS(SELECT 1 FROM pg_database WHERE datname = '%s')", dbName)
 	if err := db.QueryRow(query).Scan(&exists); err != nil {
-		return nil, fmt.Errorf("error checking if database exists: %v", err)
+		return db_instance, fmt.Errorf("error checking if database exists: %v", err)
 	}
 
 	if !exists {
 		createQuery := fmt.Sprintf("CREATE DATABASE %s", dbName)
 		if _, err := db.Exec(createQuery); err != nil {
-			return nil, fmt.Errorf("unable to create database: %v", err)
+			return db_instance, fmt.Errorf("unable to create database: %v", err)
 		}
 		fmt.Printf("Database %s created successfully!\n", dbName)
 	} else {
@@ -48,8 +54,14 @@ func Dbinitalizer() (*sql.DB, error) {
 		host, port, user, password, dbName)
 	db, err = sql.Open("postgres", psqlInfo)
 	if err != nil {
-		panic(err)
+		return db_instance, err
 	}
 
-	return db, nil
+	db_instance.db = db
+
+	return db_instance, nil
+}
+
+func (db *DB) Close() {
+	db.db.Close()
 }

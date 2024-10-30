@@ -9,6 +9,10 @@ import (
 )
 
 func main() {
+	postgresmain()
+}
+
+func postgresmain() {
 
 	db, err := postgres.Dbinitalizer()
 	if err != nil {
@@ -17,14 +21,14 @@ func main() {
 	defer db.Close()
 
 	println("Creating a table if not exist")
-	err = postgres.CreateProductTable(db, "dtable")
+	err = db.CreateProductTable("dtable")
 	if err != nil {
 		log.Println(err)
 	}
 
 	println("Inserting it to db")
 	var pk int
-	pk, err = postgres.Insert(db, "dtable", structs.Product{
+	pk, err = db.Insert("dtable", structs.Product{
 		Name:      "P001",
 		Price:     2433.09,
 		Available: true,
@@ -33,10 +37,9 @@ func main() {
 		log.Println(err)
 	}
 	println("The product is now inserted with id", pk)
-	
 
 	var dd []structs.Product
-	dd, err = postgres.GetAll(db,  "dtable")
+	dd, err = db.GetALL("dtable")
 	if err != nil {
 		log.Println(err)
 	}
@@ -49,7 +52,7 @@ func main() {
 		Available: false,
 		Price:     66,
 	}
-	re, err = postgres.UpdateBYID(db, 5, "dtable", prod)
+	re, err = db.UpdateBYID(5, "dtable", prod)
 	if err != nil {
 		log.Println(err)
 	}
@@ -57,21 +60,21 @@ func main() {
 
 	println("Geting data with id 2")
 	var data structs.Product
-	data, err = postgres.GetRowByID(db, 3, "dtable")
+	data, err = db.GetRowByID(3, "dtable")
 	if err != nil {
 		log.Println(err)
 	}
 	println("name :", data.Name, "Price:", data.Price, "Available", data.Available)
 
 	println("Deleting")
-	re, err = postgres.DeleteById(db, 2, "dtable")
+	re, err = db.DeleteById(2, "dtable")
 	if err != nil {
 		log.Println(err)
 	}
 	println(re, "lines are effected")
 
 	println("Deleting")
-	re, err = postgres.DeleteObject(db, "dtable",structs.Product{
+	re, err = db.DeleteObject("dtable", structs.Product{
 		Name:      "P001",
 		Price:     2433.09,
 		Available: true,
@@ -81,6 +84,4 @@ func main() {
 	}
 	println(re, "lines are effected")
 
-	
-	
 }
