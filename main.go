@@ -31,20 +31,34 @@ func main() {
 		panic(err)
 	}
 	println("The product is now inserted with id", pk)
+	
 
-	println("Geting data with id 1")
+	var dd []structs.Product
+	dd, err = postgres.GetAllRowByName(db, "P001", "dtable")
+	if err != nil {
+		panic(err)
+	}
+	structs.Printprods(dd)
+
+	println("Update testig on id 2")
+	var re int64
+	prod := structs.Product{
+		Name:      "ho",
+		Available: false,
+		Price:     66,
+	}
+	re, err = postgres.UpdateBYID(db, 2, "dtable", prod)
+	if err != nil {
+		panic(err)
+	}
+	println(re, "lines are effected")
+
+	println("Geting data with id 2")
 	var data structs.Product
 	data, err = postgres.GetRowByID(db, 2, "dtable")
 	if err != nil {
 		panic(err)
 	}
 	println("name :", data.Name, "Price:", data.Price, "Available", data.Available)
-
-	var dd []structs.Product
-	dd,err = postgres.GetAllRowByName(db,"P001","dtable")
-	if err != nil {
-		panic(err)
-	}	
-	structs.Printprods(dd)
 
 }
