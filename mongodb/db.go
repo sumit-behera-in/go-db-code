@@ -12,7 +12,7 @@ import (
 type DB struct {
 	client *mongo.Client
 	ctx    context.Context
-	cancel context.CancelFunc
+	Cancel context.CancelFunc
 }
 
 func New() (DB, error) {
@@ -21,7 +21,7 @@ func New() (DB, error) {
 	var err error
 
 	clientOptions := options.Client().ApplyURI(fmt.Sprintf("%s%s", protocol, connetionURL))
-	db.ctx, db.cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	db.ctx, db.Cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	db.client, err = mongo.Connect(db.ctx, clientOptions)
 	if err != nil {
 		return db, err

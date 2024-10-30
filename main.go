@@ -15,12 +15,16 @@ func main() {
 		panic(err)
 	}
 
+	defer db.Cancel()
+
+	db.SwapOneAvailability("P002", 243.09, true)
+
 	println("Inserting it to db")
 	var pk string
 	pk, err = db.Insert(
 		structs.Product{
-			Name:      "P002",
-			Price:     243.09,
+			Name:      "P003",
+			Price:     243.9,
 			Available: true,
 		},
 	)
