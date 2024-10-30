@@ -1,9 +1,9 @@
 package structs
 
 type Product struct {
-	Name      string
-	Price     float64
-	Available bool
+	Name      string  `bson:"name"`
+	Price     float64 `bson:"price"`
+	Available bool    `bson:"available"`
 }
 
 func Printprods(datas []Product) {
