@@ -4,12 +4,38 @@ import (
 	"log"
 
 	_ "github.com/lib/pq"
+	"github.com/sumit-behera-in/go-db-code/mongodb"
 	"github.com/sumit-behera-in/go-db-code/postgres"
 	"github.com/sumit-behera-in/go-db-code/structs"
 )
 
 func main() {
-	postgresmain()
+	db, err := mongodb.New()
+	if err != nil {
+		panic(err)
+	}
+
+	println("Inserting it to db")
+	var pk string
+	pk, err = db.Insert(
+		structs.Product{
+			Name:      "P002",
+			Price:     243.09,
+			Available: true,
+		},
+	)
+	if err != nil {
+		log.Println(err)
+	}
+	println("The product is now inserted with id", pk)
+
+	var dd []structs.Product
+	dd, err = db.GetAll()
+	if err != nil {
+		log.Println(err)
+	}
+	structs.Printprods(dd)
+
 }
 
 func postgresmain() {
