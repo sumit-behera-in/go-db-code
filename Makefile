@@ -34,8 +34,16 @@ BUILD_DIR = bin
 # Default target
 all: build
 
+# Define the folders to generate tests for
+generate-tests:
+	gotests -w -all mongodb
+	@echo "Test cases generated for mongodb"
+	gotests -w -all postgres
+	@echo "Test cases generated for postgres"
+
+
 # Test target
-test:
+test: generate-tests
 	@echo "Running tests..."
 	go test ./...
 
@@ -70,14 +78,19 @@ build-windows: test
 	set GOARCH=amd64 
 	go build -o $(BUILD_DIR)/$(APP_NAME)-windows.exe
 
+#build for all
+build-all: build-windows build-darwin build-linux
+
 # Help target to list all commands
 help:
 	@echo "Makefile commands:"
-	@echo "  make build         - Build for the local OS and architecture"
-	@echo "  make run           - Build and run the application"
-	@echo "  make clean         - Remove the build directory"
-	@echo "  make test          - Run all tests"
-	@echo "  make build-linux   - Build for Linux"
-	@echo "  make build-darwin  - Build for macOS"
-	@echo "  make build-windows - Build for Windows"
-	@echo "  make help          - Show this help message"
+	@echo "  mingw32-make build         - Build for the local OS and architecture"
+	@echo "  mingw32-make run           - Build and run the application"
+	@echo "  mingw32-make clean         - Remove the build directory"
+	@echo "  mingw32-make generate-tests - Generates tests"
+	@echo "  mingw32-make test          - Run all tests"
+	@echo "  mingw32-make build-all   - Build for Linux, Macos, Windows"
+	@echo "  mingw32-make build-linux   - Build for Linux"
+	@echo "  mingw32-make build-darwin  - Build for macOS"
+	@echo "  mingw32-make build-windows - Build for Windows"
+	@echo "  mingw32-make help          - Show this help message"

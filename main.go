@@ -10,6 +10,11 @@ import (
 )
 
 func main() {
+	mongomain()
+	postgresmain()
+}
+
+func mongomain() {
 	db, err := mongodb.New()
 	if err != nil {
 		panic(err)
